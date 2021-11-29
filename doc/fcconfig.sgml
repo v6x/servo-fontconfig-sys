@@ -203,7 +203,8 @@ cause a new configuration to be created for use as current configuration.
 	<refsect1><title>Description</title>
 	    <para>
 Sets the current default configuration to <parameter>config</parameter>.  Implicitly calls
-FcConfigBuildFonts if necessary, returning FcFalse if that call fails.
+FcConfigBuildFonts if necessary, and FcConfigReference() to inrease the reference count
+in <parameter>config</parameter> since 2.12.0, returning FcFalse if that call fails.
 	    </para>
 	</refsect1>
     </refentry>
@@ -992,8 +993,9 @@ If <parameter>config</parameter> is NULL, the current configuration is used.
 	<refsect1><title>Description</title>
 	    <para>
 Adds an application-specific font to the configuration. Returns FcFalse
-if the fonts cannot be added (due to allocation failure). Otherwise returns FcTrue.
-If <parameter>config</parameter> is NULL, the current configuration is used.
+if the fonts cannot be added (due to allocation failure or no fonts found).
+Otherwise returns FcTrue. If <parameter>config</parameter> is NULL,
+the current configuration is used.
 	    </para>
 	</refsect1>
     </refentry>
@@ -1046,8 +1048,9 @@ If <parameter>config</parameter> is NULL, the current configuration is used.
 	    <para>
 Scans the specified directory for fonts, adding each one found to the
 application-specific set of fonts. Returns FcFalse
-if the fonts cannot be added (due to allocation failure). Otherwise returns FcTrue.
-If <parameter>config</parameter> is NULL, the current configuration is used.
+if the fonts cannot be added (due to allocation failure).
+Otherwise returns FcTrue. If <parameter>config</parameter> is NULL,
+the current configuration is used.
 	    </para>
 	</refsect1>
     </refentry>
@@ -1565,6 +1568,66 @@ and parsed.  If 'complain' is FcFalse, no warning will be displayed if
 Returns FcFalse if some error occurred while loading the file, either a
 parse error, semantic error or allocation failure. Otherwise returns FcTrue.
 	    </para>
+	</refsect1>
+    </refentry>
+<!--
+   fontconfig/doc/func.sgml
+  
+   Copyright © 2003 Keith Packard
+  
+   Permission to use, copy, modify, distribute, and sell this software and its
+   documentation for any purpose is hereby granted without fee, provided that
+   the above copyright notice appear in all copies and that both that
+   copyright notice and this permission notice appear in supporting
+   documentation, and that the name of the author(s) not be used in
+   advertising or publicity pertaining to distribution of the software without
+   specific, written prior permission.  The authors make no
+   representations about the suitability of this software for any purpose.  It
+   is provided "as is" without express or implied warranty.
+  
+   THE AUTHOR(S) DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+   INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+   EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+   DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+   TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+   PERFORMANCE OF THIS SOFTWARE.
+ -->
+    <refentry id="FcConfigParseAndLoadFromMemory">
+	<refmeta>
+	    <refentrytitle>FcConfigParseAndLoadFromMemory</refentrytitle>
+	    <manvolnum>3</manvolnum>
+	    <refmiscinfo class="software">Fontconfig &version;</refmiscinfo>
+	</refmeta>
+	<refnamediv>
+	    <refname>FcConfigParseAndLoadFromMemory</refname>
+	    <refpurpose>load a configuration from memory</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+	<funcsynopsis>
+	<funcsynopsisinfo>
+#include &lt;fontconfig/fontconfig.h&gt;
+	</funcsynopsisinfo>
+	<funcprototype>
+	    <funcdef>FcBool <function>FcConfigParseAndLoadFromMemory</function></funcdef>
+		<paramdef>FcConfig *<parameter>config</parameter></paramdef>
+		<paramdef>const FcChar8 *<parameter>buffer</parameter></paramdef>
+		<paramdef>FcBool <parameter>complain</parameter></paramdef>
+	</funcprototype>
+	</funcsynopsis>
+	</refsynopsisdiv>
+	<refsect1><title>Description</title>
+	    <para>
+Walks the configuration in 'memory' and constructs the internal representation
+in 'config'.  Any includes files referenced from within 'memory' will be loaded
+and dparsed.  If 'complain' is FcFalse, no warning will be displayed if
+'file' does not exist. Error and warning messages will be output to stderr.
+Returns FcFalse if fsome error occurred while loading the file, either a
+parse error, semantic error or allocation failure. Otherwise returns FcTrue.
+	    </para>
+	</refsect1>
+	<refsect1><title>Since</title>
+	    <para>version 2.12.5</para>
 	</refsect1>
     </refentry>
 <!--
